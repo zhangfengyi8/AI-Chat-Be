@@ -21,6 +21,7 @@ import {
   PdfProcessResponseDto,
 } from '../dto/rag.dto';
 import { Runnable } from '@langchain/core/runnables';
+import { AI_CONFIG } from 'src/config/ai.config';
 
 interface DocumentWithMetadata extends Document {
   metadata: {
@@ -53,20 +54,20 @@ export class RagService {
     try {
       // 初始化嵌入模型
       this.embeddings = new OpenAIEmbeddings({
-        openAIApiKey: 'sk-839c413f949049918615290813173f2f',
+        openAIApiKey: AI_CONFIG.API_KEY,
         configuration: {
-          baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+          baseURL: AI_CONFIG.BASE_URL,
         },
         modelName: 'text-embedding-v1',
       });
 
       // 初始化LLM
       this.llm = new ChatOpenAI({
-        openAIApiKey: 'sk-839c413f949049918615290813173f2f',
+        openAIApiKey: AI_CONFIG.API_KEY,
         configuration: {
-          baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+          baseURL: AI_CONFIG.BASE_URL,
         },
-        modelName: 'qwen-long',
+        modelName: AI_CONFIG.MODEL_NAME,
         temperature: 0.1,
       });
 

@@ -27,7 +27,12 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter(), new AllExceptionsFilter());
 
   // 跨域
-  app.enableCors();
+  //   app.enableCors();
+  // ✅ 启用 CORS 并设置允许来源
+  app.enableCors({
+    origin: 'http://localhost:5173', // 或 ['http://localhost:5173']
+    credentials: true, // 如果你用 cookie/token 等需加
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 

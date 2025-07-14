@@ -57,7 +57,6 @@ export class ChatService {
       const subject = this.chatSubjects.get(chatId);
       subject?.next(
         new MessageEvent('message', {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: message,
           lastEventId: String(Date.now()), // 对应 id
         }),
@@ -93,26 +92,40 @@ export class ChatService {
         fileContent,
       ); // 保存用户消息到数据库
 
-      const completion = await this.aiService.getMain(
+      //   const completion = await this.aiService.getMain(message, filePath);
+
+      const completion = await this.aiService.getMainWithMemory(
+        id,
         message,
         filePath,
-        imgUrl,
       );
 
       let fullContent = '';
-      for await (const chunk of completion) {
-        if (Array.isArray(chunk.choices) && chunk.choices.length > 0) {
-          const content = chunk.choices[0].delta.content || '';
-          fullContent += content;
 
-          // 通过SSE发送每个块到前端
-          this.sendMessageToChat(id, {
-            type: 'chunk',
-            content: content,
-            isComplete: false,
-          });
-        }
+      for await (const chunk of completion) {
+        fullContent += chunk;
+        this.sendMessageToChat(id, {
+          type: 'chunk',
+          content: chunk,
+          isComplete: false,
+        });
       }
+
+      //   注释掉之前的逻辑，不要删除
+      //   let fullContent = '';
+      //   for await (const chunk of completion) {
+      //     if (Array.isArray(chunk.choices) && chunk.choices.length > 0) {
+      //       const content = chunk.choices[0].delta.content || '';
+      //       fullContent += content;
+
+      //       // 通过SSE发送每个块到前端
+      //       this.sendMessageToChat(id, {
+      //         type: 'chunk',
+      //         content: content,
+      //         isComplete: false,
+      //       });
+      //     }
+      //   }
 
       // 发送完整内容和完成标志
       this.sendMessageToChat(id, {

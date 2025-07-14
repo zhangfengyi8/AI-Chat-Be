@@ -29,6 +29,7 @@ export class UsersController {
 
   @Get('register-captcha')
   async sendCaptcha(@Query() { address }: registerCaptchaDto) {
+    console.log('邮箱', address);
     const code = Math.random().toString().slice(2, 8);
     await this.redisService.set(`captcha_${address}`, code, 60 * 5);
     await this.emailService.sendEmail({

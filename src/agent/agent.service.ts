@@ -4,6 +4,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatOpenAI } from '@langchain/openai';
 import { Runnable } from '@langchain/core/runnables';
+import { AI_CONFIG } from 'src/config/ai.config';
 
 import { AgentType } from './entities/agent.entity';
 import { GenerateContentDto } from './dto/create-agent.dto';
@@ -20,11 +21,11 @@ export class AgentService {
   constructor() {
     // 初始化LangChain模型
     this.llm = new ChatOpenAI({
-      openAIApiKey: 'sk-839c413f949049918615290813173f2f',
+      openAIApiKey: AI_CONFIG.API_KEY,
       configuration: {
-        baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        baseURL: AI_CONFIG.BASE_URL,
       },
-      modelName: 'qwen-long',
+      modelName: AI_CONFIG.MODEL_NAME,
       temperature: 0.8,
     });
 
